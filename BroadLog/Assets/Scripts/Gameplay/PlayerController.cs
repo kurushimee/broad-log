@@ -6,6 +6,7 @@ namespace Gameplay
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private float moveSpeed;
+        [SerializeField] private bool diagonalMovement;
         private bool _isMoving;
         private Vector2 _moveInput;
 
@@ -15,8 +16,7 @@ namespace Gameplay
             _moveInput.x = Input.GetAxisRaw("Horizontal");
             _moveInput.y = Input.GetAxisRaw("Vertical");
 
-            // Disable diagonal movement
-            if (_moveInput.x != 0) _moveInput.y = 0;
+            if (!diagonalMovement && _moveInput.x != 0) _moveInput.y = 0;
             
             if (_moveInput == Vector2.zero) return;
             var targetPos = transform.position;
