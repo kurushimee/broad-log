@@ -8,8 +8,10 @@ namespace Gameplay
         private static readonly int MoveX = Animator.StringToHash("moveX");
         private static readonly int MoveY = Animator.StringToHash("moveY");
         private static readonly int IsMoving = Animator.StringToHash("isMoving");
+
         [SerializeField] private float moveSpeed;
         [SerializeField] private bool diagonalMovement;
+        [SerializeField] private LayerMask solidObjectsLayer;
 
         private Animator _animator;
         private bool _isMoving;
@@ -38,11 +40,17 @@ namespace Gameplay
                     targetPos.x += _moveInput.x;
                     targetPos.y += _moveInput.y;
 
-                    StartCoroutine(Move(targetPos));
+                    if (IsWalkable(targetPos))
+                        StartCoroutine(Move(targetPos));
                 }
             }
 
             _animator.SetBool(IsMoving, _isMoving);
+        }
+
+        private bool IsWalkable(Vector3 targetPos)
+        {
+            return Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) is null;
         }
 
         private IEnumerator Move(Vector3 targetPos)
