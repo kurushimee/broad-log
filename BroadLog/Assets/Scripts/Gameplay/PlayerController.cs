@@ -17,9 +17,12 @@ namespace Gameplay
         private bool _isMoving;
         private Vector2 _moveInput;
 
+        private PlayerInteract _interact;
+
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _interact = GetComponent<PlayerInteract>();
         }
 
         private void Update()
@@ -42,6 +45,8 @@ namespace Gameplay
 
                     if (IsWalkable(targetPos))
                         StartCoroutine(Move(targetPos));
+
+                    _interact.sightDir = _moveInput;
                 }
             }
 
