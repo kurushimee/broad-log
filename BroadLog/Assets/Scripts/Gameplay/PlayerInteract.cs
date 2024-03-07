@@ -25,7 +25,7 @@ public class PlayerInteract : MonoBehaviour
 
                 if (Input.GetKey(KeyCode.E))
                 {
-                    Debug.Log("Õ¿∆¿À!");
+                    //Debug.Log("Õ¿∆¿À!");
                     activable.Interact();
                 }
             }

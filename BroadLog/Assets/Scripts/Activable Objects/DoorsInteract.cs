@@ -25,6 +25,7 @@ public class DoorsInteract : MonoBehaviour, IActivable
         if (distance.magnitude > 3f)
         {
             _animator.SetBool(IsOpen, false);
+            bColl.enabled = true;
         }
 
     }
