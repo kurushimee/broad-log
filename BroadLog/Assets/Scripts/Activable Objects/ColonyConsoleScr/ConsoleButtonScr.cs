@@ -8,6 +8,7 @@ public class ConsoleButtonScr : MonoBehaviour
     [SerializeField] Image frame;
     [SerializeField] GameObject chosed;
     [SerializeField] GameObject contentObj;
+    public bool isGame;
     bool fadeIn = false;
 
     private void Update()
@@ -15,7 +16,7 @@ public class ConsoleButtonScr : MonoBehaviour
         if (fadeIn)
         {
             var tempColor = frame.color;
-            tempColor.a = Mathf.PingPong(Time.time*2f, 1f);
+            tempColor.a = Mathf.PingPong(Time.time*3f, 1f);
             frame.color = tempColor;
         }
     }
