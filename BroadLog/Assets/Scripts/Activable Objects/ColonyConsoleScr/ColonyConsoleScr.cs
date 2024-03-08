@@ -87,6 +87,7 @@ public class ColonyConsoleScr : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(playingGame)
         DrillRayCast();
 
     }
