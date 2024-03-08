@@ -18,6 +18,8 @@ namespace Managers
 
         private void Start()
         {
+            _state = GameState.Gameplay;
+
             DialogueManager.Instance.OnShowDialogue += () => _state = GameState.Dialogue;
             DialogueManager.Instance.OnHideDialogue += () => _state = GameState.Gameplay;
         }
