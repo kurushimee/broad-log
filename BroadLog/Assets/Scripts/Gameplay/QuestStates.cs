@@ -3,7 +3,19 @@ using UnityEngine.UI;
 
 namespace Gameplay
 {
+<<<<<<< Updated upstream
     public class QuestStates : MonoBehaviour
+=======
+    [SerializeField] GameObject noteObj;
+    [SerializeField] Text noteNameT;
+    [SerializeField] Text noteDiscrT;
+
+    int waterLevelNeed;
+    int waterLevelHave;
+
+
+    private void Update()
+>>>>>>> Stashed changes
     {
         [SerializeField] private GameObject noteObj;
         [SerializeField] private Text noteNameT;
@@ -27,4 +39,23 @@ namespace Gameplay
             noteObj.SetActive(false);
         }
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    public void SetDiscrToNote(string name, string dscr)
+    {
+        noteNameT.text = name;
+        noteDiscrT.text = dscr;
+
+        noteObj.SetActive(true);
+    }
+
+    void CloseAllWindows()
+    {
+        noteObj.SetActive(false);
+    }
+
+
+}
+>>>>>>> Stashed changes

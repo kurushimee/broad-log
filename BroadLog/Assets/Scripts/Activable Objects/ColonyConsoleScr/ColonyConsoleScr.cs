@@ -61,8 +61,12 @@ public class ColonyConsoleScr : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    buttons[buttons.Length - 1].OpenPage(false);
-                    buttons[buttons.Length - 1].StopBlinking();
+                    for (int i = 0; i < buttons.Length; i++)
+                    {
+                        buttons[i].OpenPage(false);
+                        buttons[i].StopBlinking();
+                    }
+
                     CloseConsole();
                 }
 
