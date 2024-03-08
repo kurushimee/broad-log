@@ -11,9 +11,12 @@ public class FlowerButtonsScr : MonoBehaviour
     [SerializeField] Color selfColor;
     [SerializeField] Color choseColor;
 
+    public Image bar;
+    public float fillLoading;
+
     public bool haveTrigger;
     public bool isTrigger;
-    [SerializeField] int triggerPos;
+    public int triggerPos = 3;
 
     public void SelectButton(bool sel)
     {
@@ -38,27 +41,40 @@ public class FlowerButtonsScr : MonoBehaviour
 
     public void ChangeTrigger()
     {
-        triggerPos += 1;
+        triggerPos -= 1;
         Vector2 pos;
         switch (triggerPos)
         {
-            case 0:
-                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y - 105f);
-                triggerObj.transform.position = pos;
-                break;
             case 1:
-                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y - 105f);
+                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y + 105f);
                 triggerObj.transform.position = pos;
                 break;
             case 2:
-                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y - 105f);
+                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y + 105f);
                 triggerObj.transform.position = pos;
                 break;
             case 3:
-                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y + 210f);
+                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y + 105f);
                 triggerObj.transform.position = pos;
-                triggerPos = 0;
                 break;
+            default:
+                triggerPos = 3;
+                pos = new Vector2(triggerObj.transform.position.x, triggerObj.transform.position.y - 210f);
+                triggerObj.transform.position = pos;
+                break;
+        }
+    }
+    public void StartLoadFill()
+    {
+        bar.fillAmount = 0f;
+        StartCoroutine(LoadFill());
+    }
+    IEnumerator LoadFill()
+    {
+        while (bar.fillAmount < fillLoading)
+        {
+            bar.fillAmount += 0.01f;
+            yield return new WaitForSeconds(0.01f);
         }
     }
 }

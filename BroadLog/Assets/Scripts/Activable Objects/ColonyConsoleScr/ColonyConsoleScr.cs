@@ -12,6 +12,7 @@ public class ColonyConsoleScr : MonoBehaviour
     [SerializeField] PlayerController playerController;
     [SerializeField] GameObject loadingWindow;
     [SerializeField] GameObject mainWindow;
+    [SerializeField] QuestStates questStates;
 
     [SerializeField] ConsoleButtonScr[] buttons;
 
@@ -21,17 +22,26 @@ public class ColonyConsoleScr : MonoBehaviour
     private bool consoleIsOpen;
     private bool mainIsOpen;
     [SerializeField] bool playingGame;
+    [SerializeField] bool analizeLogs;
 
     [SerializeField] GameObject drillGameGrid;
     [SerializeField] GameObject drillGameObj;
     [SerializeField] InputField drillInputObj;
+    [SerializeField] InputField logInputObj;
+    [SerializeField] Text logInputTextObj;
 
     int drillDirection;
     [SerializeField] int drillX = 11;
     [SerializeField] int drillY = 11;
     string drillInputText;
+    string logInputText;
+    DrillGameCellScr iceBlockDrilling;
+    [SerializeField] bool canDrill;
 
     public int choseInput;
+
+    [SerializeField] Text[] stationHave;
+    [SerializeField][TextArea] string[] logText;
 
     private void Start()
     {
@@ -41,12 +51,14 @@ public class ColonyConsoleScr : MonoBehaviour
     {
         if (consoleIsOpen)
         {
-            if (playingGame)
+            if (playingGame || analizeLogs)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     playingGame = false;
-                    
+                    analizeLogs = false;
+
+
                     for (int i = 0; i < buttons.Length; i++)
                     {
                         buttons[i].OpenPage(false);
@@ -76,14 +88,19 @@ public class ColonyConsoleScr : MonoBehaviour
 
         if (mainIsOpen)
         {
-            if (!playingGame)
-            {
-                SelectMenu();
-            }
-            else
+            if (playingGame)
             {
                 PlayDrillGame();
                 drillInputObj.ActivateInputField();
+            }
+            else if (analizeLogs)
+            {
+                AnalizeLogsGame();
+                logInputObj.ActivateInputField();
+            }
+            else
+            {
+                SelectMenu();
             }
         }
         
@@ -132,6 +149,7 @@ public class ColonyConsoleScr : MonoBehaviour
         mainWindow.SetActive(true);
         mainIsOpen = true;
         choseInput = 0;
+        CheckStatusBase();
     }
 
     void SelectMenu()
@@ -179,6 +197,15 @@ public class ColonyConsoleScr : MonoBehaviour
             {
                 playingGame = true;
             }
+
+            if (buttons[choseInput].isLogs)
+            {
+                analizeLogs = true;
+                logInputObj.readOnly = false;
+                logInputTextObj.text = "Логи не найдены\r\nПредоставьте логи для анализа\r\n\r\nВведите start";
+            }
+
+            CheckStatusBase();
         }
     }
 
@@ -193,9 +220,11 @@ public class ColonyConsoleScr : MonoBehaviour
                 if (drillCell.isIce)
                 {
                     //Debug.Log("ТУТ ЛЁД!");
-                    drillCell.isIce = false;
+                    //drillCell.isIce = false;
+                    iceBlockDrilling = drillCell;
+                    canDrill = true;
                 }
-                
+                else canDrill = false;
             }
         }
     }
@@ -319,12 +348,87 @@ public class ColonyConsoleScr : MonoBehaviour
 
             buttons[choseInput].StartBlinking();
         }
+
+        if (drillInputText == "start drill")
+        {
+            if (canDrill)
+            {
+                drillInputText = "";
+                playingGame = false;
+
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    buttons[i].OpenPage(false);
+                    buttons[i].StopBlinking();
+                }
+                choseInput = 0;
+
+                buttons[choseInput].StartBlinking();
+                questStates.stationHaveWater = true;
+            }
+
+
+        }
+    }
+
+    void AnalizeLogsGame()
+    {
+        if (logInputText == "start")
+        {
+            logInputObj.text = "";
+            logInputText = "";
+            if (questStates.serverLogsHave > 0)
+            {
+
+                logInputObj.readOnly = true;
+                StartCoroutine(AnalizeLogsLoading());
+            }
+        }
     }
 
     public void ReadDrillInput(string st)
     {
         drillInputText = st;
         //Debug.Log(st);
+    }
+
+    public void ReadLogInput(string st)
+    {
+        logInputText = st;
+        //Debug.Log(st);
+    }
+
+    void CheckStatusBase()
+    {
+
+        if (questStates.stationHaveStorm)
+        {
+            stationHave[0].text = "Погода: Пылевая буря";
+        }else stationHave[0].text = "Погода: Солнечно";
+
+        if (questStates.stationHaveOxygen)
+        {
+            stationHave[1].text = "Кислород: Норма";
+        }
+        else stationHave[1].text = "Кислород: Критический уровень";
+
+        if (questStates.stationHaveWater)
+        {
+            stationHave[2].text = "Выработка воды: Норма";
+        }
+        else stationHave[2].text = "Выработка воды: Прекращена";
+
+        if (questStates.stationHaveElectro)
+        {
+            stationHave[3].text = "Электричество: Норма";
+        }
+        else stationHave[3].text = "Электричество: Критический уровень";
+
+        if (questStates.stationHavePersonLife)
+        {
+            stationHave[4].text = "Состояние персонала: Норма";
+        }
+        else stationHave[4].text = "Состояние персонала: Погиб";
     }
 
     private IEnumerator LoadingConsole()
@@ -345,5 +449,30 @@ public class ColonyConsoleScr : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
         MainWindow();
+    }
+
+    private IEnumerator AnalizeLogsLoading()
+    {
+        logInputTextObj.text = "";
+        for (int i = 0; i < logText.Length; i++)
+        {
+            logInputTextObj.text = logText[i];
+            yield return new WaitForSeconds(Random.Range(0.1f, 2f));
+            
+        }
+        logInputTextObj.text = "Начало нового дня";
+        questStates.GoNextDay();
+        yield return new WaitForSeconds(4f);
+
+        analizeLogs = false;
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].OpenPage(false);
+            buttons[i].StopBlinking();
+        }
+
+        bar.fillAmount = fillLoading;
+
+        CloseConsole();
     }
 }

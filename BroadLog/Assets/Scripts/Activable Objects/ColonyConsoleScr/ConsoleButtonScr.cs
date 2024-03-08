@@ -9,6 +9,7 @@ public class ConsoleButtonScr : MonoBehaviour
     [SerializeField] GameObject chosed;
     [SerializeField] GameObject contentObj;
     public bool isGame;
+    public bool isLogs;
     bool fadeIn = false;
 
     private void Update()
