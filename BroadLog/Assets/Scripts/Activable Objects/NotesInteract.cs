@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using Gameplay;
 using UnityEngine;
 
 public class NotesInteract : MonoBehaviour, IActivable
 {
-    [SerializeField] GameObject inSight;
-    [SerializeField] QuestStates quests;
+    [SerializeField] private GameObject inSight;
+    [SerializeField] private QuestStates quests;
 
-    [SerializeField][TextArea] string nameText;
-    [SerializeField][TextArea] string discrText;
+    [SerializeField] [TextArea] private string nameText;
+    [SerializeField] [TextArea] private string discrText;
 
     public void ShowMe()
     {

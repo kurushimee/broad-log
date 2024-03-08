@@ -1,33 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuestStates : MonoBehaviour
+namespace Gameplay
 {
-    [SerializeField] GameObject noteObj;
-    [SerializeField] Text noteNameT;
-    [SerializeField] Text noteDiscrT;
-
-    private void Update()
+    public class QuestStates : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        [SerializeField] private GameObject noteObj;
+        [SerializeField] private Text noteNameT;
+        [SerializeField] private Text noteDiscrT;
+
+        private void Update()
         {
-            CloseAllWindows();
+            if (Input.GetKeyDown(KeyCode.Escape)) CloseAllWindows();
+        }
+
+        public void SetDiscrToNote(string name, string dscr)
+        {
+            noteNameT.text = name;
+            noteDiscrT.text = dscr;
+
+            noteObj.SetActive(true);
+        }
+
+        private void CloseAllWindows()
+        {
+            noteObj.SetActive(false);
         }
     }
-
-    public void SetDiscrToNote(string name, string dscr)
-    {
-        noteNameT.text = name;
-        noteDiscrT.text = dscr;
-
-        noteObj.SetActive(true);
-    }
-
-    void CloseAllWindows()
-    {
-        noteObj.SetActive(false);
-    }
-
 }

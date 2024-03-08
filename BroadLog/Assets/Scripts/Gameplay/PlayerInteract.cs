@@ -1,45 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInteract : MonoBehaviour
+namespace Gameplay
 {
-
-    public Vector2 sightDir;
-    private IActivable lastActive;
-
-    private void Update()
+    public class PlayerInteract : MonoBehaviour
     {
-        if (lastActive != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
-                lastActive.Interact();
-            }
-        }
-    }
+        public Vector2 sightDir;
+        private IActivable _lastActive;
 
-    void FixedUpdate()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - .5f), sightDir, 1f);
+        private void Update()
+        {
+            if (_lastActive == null) return;
 
-        if (hit.collider != null)
-        {
-            if (hit.transform.TryGetComponent<IActivable>(out IActivable activable))
-            {
-                if(activable != lastActive)
-                {
-                    lastActive = activable;
-                    activable.ShowMe();
-                }
-            }
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.C))
+                _lastActive.Interact();
         }
-        else
+
+        private void FixedUpdate()
         {
-            if (lastActive != null)
+            var hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - .5f), sightDir, 1f);
+
+            if (hit.collider is not null)
             {
-                lastActive.DontShowMe();
-                lastActive = null;
+                if (!hit.transform.TryGetComponent(out IActivable activable)) return;
+                if (activable == _lastActive) return;
+
+                _lastActive = activable;
+                activable.ShowMe();
+            }
+            else
+            {
+                if (_lastActive == null) return;
+
+                _lastActive.DontShowMe();
+                _lastActive = null;
             }
         }
     }

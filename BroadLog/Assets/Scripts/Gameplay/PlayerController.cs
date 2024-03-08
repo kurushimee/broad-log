@@ -14,11 +14,11 @@ namespace Gameplay
         [SerializeField] private LayerMask solidObjectsLayer;
 
         private Animator _animator;
+
+        private PlayerInteract _interact;
         private bool _isMoving;
         private Vector2 _moveInput;
         private bool haveControll = true;
-
-        private PlayerInteract _interact;
 
         private void Awake()
         {
@@ -26,7 +26,7 @@ namespace Gameplay
             _interact = GetComponent<PlayerInteract>();
         }
 
-        private void Update()
+        public void HandleUpdate()
         {
             if (haveControll)
             {
