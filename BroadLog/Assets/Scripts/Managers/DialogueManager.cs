@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
-using TMPro;
 using UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Managers
 {
     public class DialogueManager : MonoBehaviour
     {
         [SerializeField] private GameObject dialogueBox;
-        [SerializeField] private TMP_Text dialogueText;
+        [SerializeField] private Text dialogueText;
         [SerializeField] private int lettersPerSecond;
         public static DialogueManager Instance { get; private set; }
 
