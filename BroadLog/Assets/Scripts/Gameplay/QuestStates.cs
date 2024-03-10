@@ -1,48 +1,63 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Gameplay
 {
-
     public class QuestStates : MonoBehaviour
     {
-        [SerializeField] GameObject noteObj;
-        [SerializeField] Text noteNameT;
-        [SerializeField] Text noteDiscrT;
+        [FormerlySerializedAs("noteObj")] [SerializeField]
+        private GameObject noteObject;
 
-        [SerializeField] Image fadeInOutImage;
+        [FormerlySerializedAs("noteNameT")] [SerializeField]
+        private Text noteNameText;
+
+        [FormerlySerializedAs("noteDiscrT")] [SerializeField]
+        private Text noteDescriptionText;
+
+        [SerializeField] private Image fadeInOutImage;
 
         public int day = 1;
 
-        public int[] flowerNeedsLevel;//требуемый уровень воды/удобрений/света по убыванию 3 самая низкая потребность, 1 самая высокая
-        public bool stationHaveStorm;//буря на улице?
-        public bool stationHaveOxygen;
-        public bool stationHaveWater;
-        public bool stationHaveElectro;
-        public bool stationHavePersonLife;
+        public int[] flowerNeedsLevel;
+
+        [FormerlySerializedAs("stationHaveStorm")]
+        public bool stationHasStorm;
+
+        [FormerlySerializedAs("stationHaveOxygen")]
+        public bool stationHasAir;
+
+        [FormerlySerializedAs("stationHaveWater")]
+        public bool stationHasWater;
+
+        [FormerlySerializedAs("stationHaveElectro")]
+        public bool stationHasElectricity;
+
+        [FormerlySerializedAs("stationHavePersonLife")]
+        public bool stationHasPersonnel;
 
         public int serverLogsHave;
 
-        void Update()
+        private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) CloseAllWindows();
+            if (Input.GetKeyDown(KeyCode.Escape)) CloseAllNotes();
         }
 
-        public void SetDiscrToNote(string name, string dscr)
+        public void SetNoteDescription(string noteName, string noteDescription)
         {
-            noteNameT.text = name;
-            noteDiscrT.text = dscr;
+            noteNameText.text = noteName;
+            noteDescriptionText.text = noteDescription;
 
-            noteObj.SetActive(true);
+            noteObject.SetActive(true);
         }
 
-        void CloseAllWindows()
+        private void CloseAllNotes()
         {
-            noteObj.SetActive(false);
+            noteObject.SetActive(false);
         }
 
-        public void GoNextDay()
+        public void ToNextDay()
         {
             day += 1;
             serverLogsHave = 0;
@@ -50,15 +65,16 @@ namespace Gameplay
             StartCoroutine(FadeInOut());
         }
 
-        IEnumerator FadeInOut()
+        private IEnumerator FadeInOut()
         {
-            Color col = fadeInOutImage.color;
+            var col = fadeInOutImage.color;
             while (col.a < 1f)
             {
                 col.a += 0.01f;
                 fadeInOutImage.color = col;
                 yield return new WaitForSeconds(.02f);
             }
+
             yield return new WaitForSeconds(2f);
             while (col.a > 0f)
             {

@@ -49,7 +49,7 @@ namespace Gameplay
                         if (IsWalkable(targetPos))
                             StartCoroutine(Move(targetPos));
 
-                        _interact.sightDir = _moveInput;
+                        _interact.sightDirection = _moveInput;
                     }
                 }
 
