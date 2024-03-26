@@ -13,48 +13,40 @@ namespace Gameplay
         [SerializeField] private bool diagonalMovement;
         [SerializeField] private LayerMask solidObjectsLayer;
 
-        private Animator _animator;
+        private Animator animator;
 
-        private PlayerInteract _interact;
-        private bool _isMoving;
-        private Vector2 _moveInput;
-        private bool haveControll = true;
+        private bool isMoving;
+        private Vector2 moveInput;
 
         private void Awake()
         {
-            _animator = GetComponent<Animator>();
-            _interact = GetComponent<PlayerInteract>();
+            animator = GetComponent<Animator>();
         }
 
         public void HandleUpdate()
         {
-            if (haveControll)
+            if (!isMoving)
             {
-                if (!_isMoving)
+                moveInput.x = Input.GetAxisRaw("Horizontal");
+                moveInput.y = Input.GetAxisRaw("Vertical");
+
+                if (!diagonalMovement && moveInput.x != 0) moveInput.y = 0;
+
+                if (moveInput != Vector2.zero)
                 {
-                    _moveInput.x = Input.GetAxisRaw("Horizontal");
-                    _moveInput.y = Input.GetAxisRaw("Vertical");
+                    animator.SetFloat(MoveX, moveInput.x);
+                    animator.SetFloat(MoveY, moveInput.y);
 
-                    if (!diagonalMovement && _moveInput.x != 0) _moveInput.y = 0;
+                    var targetPos = transform.position;
+                    targetPos.x += moveInput.x;
+                    targetPos.y += moveInput.y;
 
-                    if (_moveInput != Vector2.zero)
-                    {
-                        _animator.SetFloat(MoveX, _moveInput.x);
-                        _animator.SetFloat(MoveY, _moveInput.y);
-
-                        var targetPos = transform.position;
-                        targetPos.x += _moveInput.x;
-                        targetPos.y += _moveInput.y;
-
-                        if (IsWalkable(targetPos))
-                            StartCoroutine(Move(targetPos));
-
-                        _interact.sightDirection = _moveInput;
-                    }
+                    if (IsWalkable(targetPos))
+                        StartCoroutine(Move(targetPos));
                 }
-
-                _animator.SetBool(IsMoving, _isMoving);
             }
+
+            animator.SetBool(IsMoving, isMoving);
         }
 
         private bool IsWalkable(Vector3 targetPos)
@@ -64,7 +56,7 @@ namespace Gameplay
 
         private IEnumerator Move(Vector3 targetPos)
         {
-            _isMoving = true;
+            isMoving = true;
 
             while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
             {
@@ -74,12 +66,7 @@ namespace Gameplay
 
             transform.position = targetPos;
 
-            _isMoving = false;
-        }
-
-        public void TakeControll(bool choice)
-        {
-            haveControll = choice;
+            isMoving = false;
         }
     }
 }

@@ -14,24 +14,25 @@ namespace Managers
     {
         [SerializeField] private PlayerController player;
 
-        private GameState _state;
+        private GameState state;
 
         private void Start()
         {
-            _state = GameState.Gameplay;
+            state = GameState.Gameplay;
 
-            DialogueManager.Instance.OnShowDialogue += () => _state = GameState.Dialogue;
-            DialogueManager.Instance.OnHideDialogue += () => _state = GameState.Gameplay;
+            DialogueManager.Instance.OnShowDialogue += () => state = GameState.Dialogue;
+            DialogueManager.Instance.OnHideDialogue += () => state = GameState.Gameplay;
         }
 
         private void Update()
         {
-            switch (_state)
+            switch (state)
             {
                 case GameState.Gameplay:
                     player.HandleUpdate();
                     break;
                 case GameState.Dialogue:
+                    DialogueManager.Instance.currentLine = 0;
                     DialogueManager.Instance.HandleUpdate();
                     break;
                 default:
